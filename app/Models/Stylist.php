@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
@@ -70,6 +71,17 @@ class Stylist extends Authenticatable
     public function passwordResetTokens()
     {
         return $this->hasMany(PasswordResetToken::class, 'stylist_id');
+    }
+
+    /**
+     * Generate and save a password reset token for the stylist.
+     *
+     * @return PasswordResetToken
+     */
+    public function generatePasswordResetToken()
+    {
+        // Assuming PasswordResetToken model has a method to create a token
+        return $this->passwordResetTokens()->create(['token' => Str::random(60), 'expiration' => now()->addHour(), 'used' => false]);
     }
 
     /**

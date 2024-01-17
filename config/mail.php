@@ -1,3 +1,4 @@
+
 <?php
 
 return [
@@ -13,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'mailgun'),
 
     /*
     |--------------------------------------------------------------------------
@@ -34,8 +35,8 @@ return [
     */
 
     'mailers' => [
-        'smtp' => [
-            'transport' => 'smtp',
+        'mailgun' => [
+            'transport' => 'mailgun',
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
             'port' => env('MAIL_PORT', 587),
@@ -48,13 +49,6 @@ return [
 
         'ses' => [
             'transport' => 'ses',
-        ],
-
-        'mailgun' => [
-            'transport' => 'mailgun',
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
         ],
 
         'postmark' => [

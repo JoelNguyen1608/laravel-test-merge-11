@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StylistController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,9 @@ use App\Http\Controllers\Controller;
 | is assigned to the "api" middleware group. Enjoy building your API!
 |
 */
+
+// This route allows a user to request a password reset
+Route::post('/password-reset', [PasswordResetController::class, 'requestPasswordReset']);
 
 // This route returns the authenticated user's details
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

@@ -11,6 +11,7 @@ class PasswordResetToken extends Model
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
+     * Ensure these attributes align with your table's columns
      */
     protected $fillable = [
         'email',
@@ -19,6 +20,7 @@ class PasswordResetToken extends Model
         'expiration',
         'used',
         'stylist_id',
+        // Add any new attributes you need here
     ];
 
     /**
@@ -26,6 +28,7 @@ class PasswordResetToken extends Model
      *
      * @var array<string, string>
      */
+    // Update casts if new attributes have been added or types have changed
     protected $casts = [
         'created_at' => 'datetime',
         'expiration' => 'datetime',
@@ -47,6 +50,7 @@ class PasswordResetToken extends Model
     public function stylist(): BelongsTo
     {
         return $this->belongsTo(Stylist::class, 'stylist_id');
+        // Ensure the foreign key 'stylist_id' is correctly defined in your migrations
     }
 
     /**

@@ -15,6 +15,9 @@ return new class extends Migration
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
+            $table->unsignedBigInteger('stylist_id');
+            $table->foreign('stylist_id')->references('id')->on('stylists');
+            $table->boolean('used')->default(false);
         });
     }
 
