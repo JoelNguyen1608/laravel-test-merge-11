@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'session_token', // Added from new code
+        'session_expiration', // Added from new code
     ];
 
     /**
@@ -31,6 +33,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'session_token', // Added from new code
     ];
 
     /**
@@ -40,7 +43,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        // The 'password' cast is removed because it is not a valid cast type in Laravel.
+        'session_expiration' => 'datetime', // Added from new code
+        // Removed 'password' => 'hashed', from new code as it is not a valid cast type in Laravel.
     ];
 
     /**

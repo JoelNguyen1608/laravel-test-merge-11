@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Validator;
 Route::post('/password-reset', [PasswordResetController::class, 'requestPasswordReset']);
 
 // This route returns the authenticated user's details
-// The middleware 'auth:sanctum' is used in the existing code, which is the correct one for authenticated routes
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -40,7 +39,7 @@ Route::put('/api/stylists/password_update', [StylistController::class, 'updateSt
 Route::delete('/stylists/logout', [StylistController::class, 'logout'])->middleware('auth:sanctum')->name('stylists.logout');
 
 // This route is for session validation for a stylist
-// The existing code uses 'auth:sanctum' which is the correct middleware for authenticated routes
+// The route is protected by the 'auth:sanctum' middleware to ensure that only authenticated users can access it.
 Route::middleware('auth:sanctum')->get('/stylists/session_validation', [StylistController::class, 'validateSession']);
 
 // This route allows a stylist to request a password reset
@@ -51,7 +50,7 @@ Route::post('/api/stylists/password_reset', function (Request $request) {
     ]);
 
     if ($validator->fails()) {
-        $errors = $validator->errors();
+        $errors = the validator->errors();
         if ($errors->has('email')) {
             return response()->json([
                 'status' => 400,
@@ -69,8 +68,5 @@ Route::post('/api/stylists/password_reset', function (Request $request) {
 
 // Hair Stylist Login route
 Route::post('/stylists/login', [StylistController::class, 'login']);
-
-// The POST method for stylist logout is removed as the DELETE method is more RESTful and is already defined above
-// The commented out POST route for stylist logout is not needed and therefore not included in the resolved code
 
 // Note: The 'logoutStylist' method will be implemented in the Controller class.
