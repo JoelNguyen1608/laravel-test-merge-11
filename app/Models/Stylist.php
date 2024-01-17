@@ -57,4 +57,14 @@ class Stylist extends Authenticatable
     {
         return $this->hasMany(PasswordResetToken::class, 'stylist_id');
     }
+
+    /**
+     * Clear the session token and set the token expiration to the current time.
+     */
+    public function clearSessionToken()
+    {
+        $this->session_token = null;
+        $this->token_expiration = \Carbon\Carbon::now();
+        $this->save();
+    }
 }
