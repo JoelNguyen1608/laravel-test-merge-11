@@ -34,10 +34,12 @@ Route::post('/stylist/update-password', [StylistController::class, 'updatePasswo
 // The DELETE method is more appropriate for logout action as per the requirement
 Route::delete('/stylists/logout', [StylistController::class, 'logout'])->middleware('auth:sanctum')->name('stylists.logout');
 
-// Remove the old POST route for stylist logout as it is replaced by the DELETE route
-// Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');
+// This route is for session validation for a stylist
+// The route is protected by the 'auth:sanctum' middleware to ensure that only authenticated users can access it.
+Route::middleware('auth:sanctum')->get('/stylists/session_validation', [StylistController::class, 'validateSession']);
 
 // This route allows a stylist to request a password reset
+// The route is protected by the 'api' middleware
 Route::post('/api/stylists/password_reset', function (Request $request) {
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',

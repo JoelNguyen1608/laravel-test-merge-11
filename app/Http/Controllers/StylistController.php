@@ -29,10 +29,29 @@ class StylistController extends Controller
         return response()->json(['password_update_status' => 'success'], 200);
     }
 
+    public function validateSession(Request $request): JsonResponse
+    {
+        $session_token = $request->input('session_token');
+
+        if (empty($session_token)) {
+            return response()->json(['message' => 'Session token is required.'], 401);
+        }
+
+        $stylist = Stylist::where('session_token', $session_token)->first();
+
+        if (!$stylist || $stylist->token_expiration < now()) {
+            return response()->json(['message' => 'Session token is invalid or expired.'], 401);
+        }
+
+        return response()->json(['message' => 'Session is valid.'], 200);
+    }
+
     public function logout(Request $request): JsonResponse
     {
         try {
-            $sessionToken = $request->header('Authorization');
+            // Check for session token in the request header first, then fallback to request body
+            $sessionToken = $request->header('Authorization') ?? $request->input('session_token');
+            
             if (!$sessionToken) {
                 return response()->json(['message' => 'Session token is required'], 401);
             }
@@ -46,7 +65,7 @@ class StylistController extends Controller
 
             return response()->json(['message' => 'Logout successful.'], 200);
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['logout_status' => false, 'error' => $e->getMessage()], 500);
         }
     }
 }
