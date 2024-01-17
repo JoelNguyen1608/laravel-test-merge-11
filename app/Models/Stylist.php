@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class Stylist extends Authenticatable
@@ -81,15 +81,6 @@ class Stylist extends Authenticatable
     }
 
     /**
-     * Get the password reset tokens for the stylist.
-     */
-    public function passwordResetTokens()
-    {
-        return $this->hasMany(PasswordResetToken::class, 'stylist_id');
-    }
-
-    // Methods
-    /**
      * Update the stylist's password.
      *
      * @param string $new_password
@@ -98,6 +89,35 @@ class Stylist extends Authenticatable
     public function updatePassword($new_password)
     {
         $this->password_hash = Hash::make($new_password);
+        $this->save();
+    }
+
+    /**
+     * Get the password reset tokens for the stylist.
+     */
+    public function passwordResetTokens()
+    {
+        return $this->hasMany(PasswordResetToken::class, 'stylist_id');
+    }
+
+    /**
+     * Generate and save a password reset token for the stylist.
+     *
+     * @return PasswordResetToken
+     */
+    public function generatePasswordResetToken()
+    {
+        // Assuming PasswordResetToken model has a method to create a token
+        return $this->passwordResetTokens()->create(['token' => Str::random(60), 'expiration' => now()->addHour(), 'used' => false]);
+    }
+
+    /**
+     * Clear the session token and set the token expiration to the current time.
+     */
+    public function clearSessionToken()
+    {
+        $this->session_token = null;
+        $this->token_expiration = Carbon::now();
         $this->save();
     }
 
