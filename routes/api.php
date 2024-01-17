@@ -66,6 +66,12 @@ Route::post('/api/stylists/password_reset', function (Request $request) {
     return $response;
 })->middleware('api');
 
+// Hair Stylist Login route
+Route::post('/stylists/login', [StylistController::class, 'login']);
+
 // This route allows a stylist to logout
 // The POST method is used here as per the new code, but it should be noted that DELETE is more RESTful for logout
-Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');
+// Since the DELETE method is more appropriate for logout action, we will keep the DELETE route and remove the POST route.
+// Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');
+
+// Note: The 'logoutStylist' method will be implemented in the Controller class.

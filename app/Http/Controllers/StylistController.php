@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Models\Stylist;
 use App\Models\PasswordResetToken;
 use App\Http\Requests\UpdatePasswordRequest;
@@ -9,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Exception;
 
 class StylistController extends Controller
@@ -39,6 +41,28 @@ class StylistController extends Controller
         $token->markAsUsed();
 
         return response()->json(['status' => 200, 'message' => 'Password updated successfully'], 200);
+    }
+
+    public function login(LoginRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+
+        $stylist = Stylist::where('email', $validatedData['email'])->first();
+        if (!$stylist || !Hash::check($validatedData['password'], $stylist->password_hash)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $sessionToken = Str::random(60);
+        $tokenExpiration = $validatedData['keep_session_active'] ?? false ? now()->addYear() : now()->addHours(2);
+        $stylist->session_token = $sessionToken;
+        $stylist->token_expiration = $tokenExpiration;
+        $stylist->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Login successful',
+            'stylist' => $stylist->only(['id', 'email', 'session_token', 'token_expiration'])
+        ], 200);
     }
 
     public function validateSession(Request $request): JsonResponse
