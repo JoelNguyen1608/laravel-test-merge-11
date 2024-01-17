@@ -29,7 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/stylist/update-password', [StylistController::class, 'updatePassword'])->name('stylists.update-password');
 
 // This route allows a stylist to logout
-Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');
+// The DELETE method is more appropriate for logout action as per the requirement
+Route::delete('/stylists/logout', [StylistController::class, 'logout'])->middleware('auth:sanctum')->name('stylists.logout');
 
-// Note: The above route is protected by the 'auth:sanctum' middleware as per the guideline.
-// The 'logoutStylist' method will be implemented in the Controller class.
+// Remove the old POST route for stylist logout as it is replaced by the DELETE route
+// Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');

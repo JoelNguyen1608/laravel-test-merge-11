@@ -32,11 +32,21 @@ class StylistController extends Controller
     public function logout(Request $request): JsonResponse
     {
         try {
-            $stylist = Stylist::findOrFail($request->stylist_id);
+            $sessionToken = $request->header('Authorization');
+            if (!$sessionToken) {
+                return response()->json(['message' => 'Session token is required'], 401);
+            }
+
+            $stylist = Stylist::where('session_token', $sessionToken)->first();
+            if (!$stylist || $stylist->token_expiration < now()) {
+                return response()->json(['message' => 'Invalid or expired session token'], 401);
+            }
+
             $stylist->clearSessionToken();
-            return response()->json(['logout_status' => true]);
+
+            return response()->json(['message' => 'Logout successful.'], 200);
         } catch (Exception $e) {
-            return response()->json(['logout_status' => false, 'error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
