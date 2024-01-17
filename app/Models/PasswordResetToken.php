@@ -48,4 +48,31 @@ class PasswordResetToken extends Model
     {
         return $this->belongsTo(Stylist::class, 'stylist_id');
     }
+
+    /**
+     * Validate the password reset token.
+     *
+     * @param string $token
+     * @param int $stylist_id
+     * @return bool
+     */
+    public function validateToken(string $token, int $stylist_id): bool
+    {
+        return $this->where('token', $token)
+                    ->where('stylist_id', $stylist_id)
+                    ->where('expiration', '>', now())
+                    ->where('used', false)
+                    ->exists();
+    }
+
+    /**
+     * Mark the token as used.
+     *
+     * @param string $token
+     * @return bool
+     */
+    public function markAsUsed(string $token): bool
+    {
+        return $this->where('token', $token)->update(['used' => true]);
+    }
 }
