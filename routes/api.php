@@ -48,27 +48,7 @@ Route::middleware('auth:sanctum')->get('/stylists/session_validation', [StylistC
 
 // This route allows a stylist to request a password reset
 // The route is protected by the 'api' middleware
-Route::post('/api/stylists/password_reset', function (Request $request) {
-    $validator = Validator::make($request->all(), [
-        'email' => 'required|email',
-    ]);
-
-    if ($validator->fails()) {
-        $errors = $validator->errors();
-        if ($errors->has('email')) {
-            return response()->json([
-                'status' => 400,
-                'message' => $errors->first('email'),
-            ], 400);
-        }
-    }
-
-    // Assuming the existence of a method in ForgotPasswordController to handle the password reset request
-    $response = app(ForgotPasswordController::class)->requestPasswordReset($request);
-
-    // The response should be returned from the ForgotPasswordController method
-    return $response;
-})->middleware('api');
+Route::post('/api/stylists/password_reset', [PasswordResetController::class, 'requestPasswordReset'])->middleware('api');
 
 // Hair Stylist Login route
 Route::post('/stylists/login', [StylistController::class, 'login']);

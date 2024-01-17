@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\ResetPasswordNotification; // Added from new code
 
 class User extends Authenticatable
 {
@@ -21,8 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'session_token', // Added from new code
-        'session_expiration', // Added from new code
+        'session_token', // Added from existing code
+        'session_expiration', // Added from existing code
     ];
 
     /**
@@ -33,7 +34,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'session_token', // Added from new code
+        'session_token', // Added from existing code
     ];
 
     /**
@@ -43,9 +44,20 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'session_expiration' => 'datetime', // Added from new code
+        'session_expiration' => 'datetime', // Added from existing code
         // Removed 'password' => 'hashed', from new code as it is not a valid cast type in Laravel.
     ];
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 
     /**
      * Find a user by session token.

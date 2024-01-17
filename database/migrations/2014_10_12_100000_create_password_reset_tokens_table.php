@@ -15,6 +15,11 @@ return new class extends Migration
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
+            $table->unsignedBigInteger('stylist_id');
+            $table->foreign('stylist_id')->references('id')->on('users');
+            $table->boolean('used')->default(false);
+            $table->timestamp('expires_at')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
         });
     }
 
