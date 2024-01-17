@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 Route::post('/password-reset', [PasswordResetController::class, 'requestPasswordReset']);
 
 // This route returns the authenticated user's details
+// The middleware 'auth:sanctum' is used in the existing code, which is the correct one for authenticated routes
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -37,10 +38,9 @@ Route::put('/api/stylists/password_update', [StylistController::class, 'updateSt
 // This route allows a stylist to logout
 // The DELETE method is more appropriate for logout action as per the requirement
 Route::delete('/stylists/logout', [StylistController::class, 'logout'])->middleware('auth:sanctum')->name('stylists.logout');
-Route::post('/api/login', [ForgotPasswordController::class, 'loginWithFailureHandling'])->middleware('api');
 
 // This route is for session validation for a stylist
-// The route is protected by the 'auth:sanctum' middleware to ensure that only authenticated users can access it.
+// The existing code uses 'auth:sanctum' which is the correct middleware for authenticated routes
 Route::middleware('auth:sanctum')->get('/stylists/session_validation', [StylistController::class, 'validateSession']);
 
 // This route allows a stylist to request a password reset
@@ -70,9 +70,7 @@ Route::post('/api/stylists/password_reset', function (Request $request) {
 // Hair Stylist Login route
 Route::post('/stylists/login', [StylistController::class, 'login']);
 
-// This route allows a stylist to logout
-// The POST method is used here as per the new code, but it should be noted that DELETE is more RESTful for logout
-// Since the DELETE method is more appropriate for logout action, we will keep the DELETE route and remove the POST route.
-// Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');
+// The POST method for stylist logout is removed as the DELETE method is more RESTful and is already defined above
+// The commented out POST route for stylist logout is not needed and therefore not included in the resolved code
 
 // Note: The 'logoutStylist' method will be implemented in the Controller class.

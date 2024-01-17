@@ -40,8 +40,21 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        // The 'password' cast is removed because it is not a valid cast type in Laravel.
     ];
+
+    /**
+     * Find a user by session token.
+     *
+     * @param string $sessionToken
+     * @return User|null
+     */
+    public static function findBySessionToken($sessionToken)
+    {
+        return self::where('session_token', $sessionToken)
+                    ->where('session_expiration', '>', now())
+                    ->first();
+    }
 
     /**
      * Log a failed login attempt.
