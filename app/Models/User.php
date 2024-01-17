@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'session_token', // Added from new code
+        'session_expiration', // Added from new code
     ];
 
     /**
@@ -31,6 +33,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'session_token', // Added from new code
     ];
 
     /**
@@ -40,6 +43,31 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'session_expiration' => 'datetime', // Added from new code
+        // Removed 'password' => 'hashed', from new code as it is not a valid cast type in Laravel.
     ];
+
+    /**
+     * Find a user by session token.
+     *
+     * @param string $sessionToken
+     * @return User|null
+     */
+    public static function findBySessionToken($sessionToken)
+    {
+        return self::where('session_token', $sessionToken)
+                    ->where('session_expiration', '>', now())
+                    ->first();
+    }
+
+    /**
+     * Log a failed login attempt.
+     *
+     * @param string $email
+     * @return void
+     */
+    public function logFailedLoginAttempt($email)
+    {
+        \Log::warning("Failed login attempt for email: {$email} at " . now());
+    }
 }
