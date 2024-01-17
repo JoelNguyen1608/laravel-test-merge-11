@@ -16,17 +16,29 @@ class StylistController extends Controller
     public function updatePassword(UpdatePasswordRequest $request)
     {
         $validated = $request->validated();
-        $stylist = Stylist::find($validated['stylist_id']);
-        $token = PasswordResetToken::validateToken($validated['token'], $validated['stylist_id']);
+        $token = PasswordResetToken::where('token', $validated['token'])
+                                   ->where('used', false)
+                                   ->where('expiration', '>', now())
+                                   ->first();
 
-        if (!$stylist || !$token) {
-            return response()->json(['password_update_status' => 'failed'], 400);
+        if (!$token) {
+            return response()->json(['error' => 'Reset token is required.'], 400);
+        }
+
+        $stylist = $token->stylist ?? Stylist::find($validated['stylist_id']);
+
+        if (!$stylist) {
+            return response()->json(['error' => 'Invalid or expired token'], 404);
+        }
+
+        if (empty($validated['new_password'])) {
+            return response()->json(['error' => 'New password is required.'], 400);
         }
 
         $stylist->updatePassword($validated['new_password']);
         $token->markAsUsed();
 
-        return response()->json(['password_update_status' => 'success'], 200);
+        return response()->json(['status' => 200, 'message' => 'Password updated successfully'], 200);
     }
 
     public function validateSession(Request $request): JsonResponse

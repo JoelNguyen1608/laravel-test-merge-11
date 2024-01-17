@@ -30,6 +30,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // This route allows a stylist to update their password
 Route::post('/stylist/update-password', [StylistController::class, 'updatePassword'])->name('stylists.update-password');
 
+// This route allows a stylist to update their password using a token
+// The route is protected by the 'api' middleware
+Route::put('/api/stylists/password_update', [StylistController::class, 'updateStylistPassword'])->name('stylists.password-update');
+
 // This route allows a stylist to logout
 // The DELETE method is more appropriate for logout action as per the requirement
 Route::delete('/stylists/logout', [StylistController::class, 'logout'])->middleware('auth:sanctum')->name('stylists.logout');
@@ -61,3 +65,7 @@ Route::post('/api/stylists/password_reset', function (Request $request) {
     // The response should be returned from the ForgotPasswordController method
     return $response;
 })->middleware('api');
+
+// This route allows a stylist to logout
+// The POST method is used here as per the new code, but it should be noted that DELETE is more RESTful for logout
+Route::middleware('auth:sanctum')->post('/stylist/logout', [Controller::class, 'logoutStylist'])->name('stylist.logout');
