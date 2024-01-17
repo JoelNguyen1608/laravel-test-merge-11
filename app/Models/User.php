@@ -42,4 +42,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Log a failed login attempt.
+     *
+     * @param string $email
+     * @return void
+     */
+    public function logFailedLoginAttempt($email)
+    {
+        \Log::warning("Failed login attempt for email: {$email} at " . now());
+    }
 }
