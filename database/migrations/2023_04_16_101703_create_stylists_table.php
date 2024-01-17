@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -24,6 +25,13 @@ return new class extends Migration
         Schema::table('password_reset_tokens', function (Blueprint $table) {
             $table->foreignId('stylist_id')->constrained('stylists')->onDelete('cascade');
         });
+
+        Schema::create('stylist_requests', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamp('created_at')->useCurrent();
+            $table->string('status')->default('pending');
+        });
     }
 
     /**
@@ -31,6 +39,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('stylist_requests');
+
         Schema::table('password_reset_tokens', function (Blueprint $table) {
             $table->dropForeign(['stylist_id']);
             $table->dropColumn('stylist_id');

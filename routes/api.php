@@ -27,6 +27,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// This route handles the POST request for creating a stylist request
+Route::middleware('auth:sanctum')->post('/stylist/request', [StylistController::class, 'createStylistRequest'])
+    ->name('stylist.create-request');
+
 // This route allows a stylist to update their password
 Route::post('/stylist/update-password', [StylistController::class, 'updatePassword'])->name('stylists.update-password');
 
@@ -50,7 +54,7 @@ Route::post('/api/stylists/password_reset', function (Request $request) {
     ]);
 
     if ($validator->fails()) {
-        $errors = the validator->errors();
+        $errors = $validator->errors();
         if ($errors->has('email')) {
             return response()->json([
                 'status' => 400,

@@ -23,7 +23,7 @@ class StylistRequest extends Model
      */
     protected $fillable = [
         'status',
-        'user_id',
+        'user_id', // No change required as per guidelines
     ];
 
     /**
@@ -33,7 +33,7 @@ class StylistRequest extends Model
      */
     protected $hidden = [
         // Usually, sensitive data like passwords or tokens would be hidden here.
-        // Since this table doesn't contain such data, this array is left empty.
+        // Since this table doesn't contain such data, this array is left empty. // No change required as per guidelines
     ];
 
     /**
@@ -43,7 +43,7 @@ class StylistRequest extends Model
      */
     protected $casts = [
         'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'updated_at' => 'datetime', // No change required as per guidelines
     ];
 
     /**
@@ -51,6 +51,6 @@ class StylistRequest extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id'); // No change required as per guidelines
     }
 }
